@@ -19,11 +19,14 @@ public class StringProcessor {
     }
 
     public static int stringFindSecondInFirst(String string1, String string2) {
-        if (string2 == "") {
-            throw new IllegalArgumentException("Second string is empty");
-        } else if (string2 == null) {
+        if (string2 == null) {
             throw new IllegalArgumentException("Second string is null");
         }
+        if (string2.equals("")) {
+            throw new IllegalArgumentException("Second string is empty");
+        }
+        if (string1 == null) return 0;
+
 
         int[] indexes;
         int index = 0;
@@ -36,11 +39,13 @@ public class StringProcessor {
     }
 
     public static String stringNumberRenamer(String string) {
-        if (string == ""){
-            throw new IllegalArgumentException("String is empty");
-        } else if (string == null){
+        if (string == null) {
             throw new IllegalArgumentException("String is null");
         }
+        if (string.equals("")) {
+            return "";
+        }
+
         String newString = "";
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '1') {
@@ -58,6 +63,13 @@ public class StringProcessor {
 
     //заставило подумать
     public static String stringBuilder(String string){
+        if (string == null) {
+            throw new IllegalArgumentException("String is null");
+        }
+        if (string.equals("")) {
+            return "";
+        }
+
         int lenght = string.length();
         for (int i = 0; i < lenght;i++){
             if (i % 2 == 0){
@@ -69,6 +81,12 @@ public class StringProcessor {
     }
 
     public static String stringReverse(String string) {
+        if (string == null) {
+            throw new IllegalArgumentException("String is null");
+        }
+        if (string.equals("")) {
+            return "";
+        }
         String output = "";
         String[] buffer = new String[string.length()];
         int j = string.length() - 1;
@@ -108,6 +126,12 @@ public class StringProcessor {
 
 
     public static String replaceHexToDec(String string) {
+        if (string == null) {
+            throw new IllegalArgumentException("String is null");
+        }
+        if (string.equals("")) {
+            return "";
+        }
         String output = "";
         int i = 0;
 
