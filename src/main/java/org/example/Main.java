@@ -1,10 +1,8 @@
 package org.example;
 public class Main {
     static void main() {
-        IO.println(String.format("Hello and welcome!"));
-
-        for (int i = 1; i <= 5; i++) {
-            IO.println("i = " + i);
-        }
+        System.out.println(StringProcessor.stringBuilder("123456"));
     }
 }
+// ddc cbb ba aa
+// dd cc bbb aaa
