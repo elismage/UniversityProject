@@ -59,7 +59,16 @@ public class StringProcessorTest {
     //ТЕСТЫ ДЛЯ ЗАДАНИЯ 4
     @Test
     public void stringBuilder_NormalCase() {
-        assertEquals("135", StringProcessor.stringBuilder("123456"));
+        StringBuilder sb = new StringBuilder("123456");
+        StringProcessor.stringBuilder(sb);
+        assertEquals("135",sb.toString());
+    }
+
+    @Test
+    public void testStringBuilder_NullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            StringProcessor.stringBuilder(null);
+        });
     }
 
     //ТЕСТЫ ДЛЯ ЗАДАНИЯ 5

@@ -100,7 +100,7 @@ public class FinanceReportProcessor {
             searchYear += 2000;
         }
 
-        int count = 0;
+        int totalSum = 0;
         Payment[] payments = originalReport.getFinanceReport();
 
         for (int i = 0; i < payments.length; i++) {
@@ -113,11 +113,11 @@ public class FinanceReportProcessor {
                     payments[i].getDateMonth() == searchMonth &&
                     payments[i].getDateYear() == searchYear) {
 
-                count++;
+                totalSum+=payments[i].getPayment();
             }
         }
 
-        return count;
+        return totalSum;
     }
 
     public static List<String> getMonthsWithNoPayments(FinanceReport originalReport, int searchYear) {

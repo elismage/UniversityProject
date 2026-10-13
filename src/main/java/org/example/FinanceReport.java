@@ -38,9 +38,6 @@ public class FinanceReport {
     }
 
     //setters
-    public void setFinanceReport(Payment[] financeReport) {
-        this.financeReport = financeReport;
-    }
 
     public void setFIO(String FIO) {
         this.fio = FIO;

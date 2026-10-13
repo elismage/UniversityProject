@@ -61,23 +61,19 @@ public class StringProcessor {
         return newString;
     }
 
-    //заставило подумать
-    public static String stringBuilder(String string){
+    public static void stringBuilder(StringBuilder string) {
         if (string == null) {
             throw new IllegalArgumentException("String is null");
         }
-        if (string.equals("")) {
-            return "";
-        }
+        if (string.length() == 0) {
+            throw new IllegalArgumentException("String is null");
 
-        int lenght = string.length();
-        for (int i = 0; i < lenght;i++){
-            if (i % 2 == 0){
-                string+=string.charAt(i);
+        }
+        for (int i = string.length() - 1; i >= 0; i--) {
+            if (i % 2 != 0) {
+                string.deleteCharAt(i);
             }
         }
-        string = string.substring(lenght);
-        return string;
     }
 
     public static String stringReverse(String string) {
