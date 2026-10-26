@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class FinanceReport {
     private Payment[] financeReport;
     private String fio;
@@ -7,16 +10,39 @@ public class FinanceReport {
     private int month;
     private int year;
 
-    //constructor
     public FinanceReport(String fio, int day, int month, int year, int paymentsCount) {
+        if (paymentsCount < 0) {
+            throw new IllegalArgumentException("Payments count cannot be negative");
+        }
         this.fio = fio;
         this.day = day;
         this.month = month;
         this.year = year;
-        this.financeReport = new Payment[paymentsCount]; // Выделяем память под массив
+        this.financeReport = new Payment[paymentsCount];
     }
 
-    //getters
+    public FinanceReport(FinanceReport other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Копируемый отчет не может быть null");
+        }
+
+        this.fio = other.getFIO();
+        this.day = other.getDay();
+        this.month = other.getMonth();
+        this.year = other.getYear();
+
+        if (other.getFinanceReport() != null) {
+            this.financeReport = new Payment[other.getFinanceReport().length];
+            for (int i = 0; i < other.getFinanceReport().length; i++) {
+                if (other.getFinanceReport()[i] != null) {
+                    this.financeReport[i] = new Payment(other.getFinanceReport()[i]);
+                } else {
+                    this.financeReport[i] = null;
+                }
+            }
+        }
+    }
+
     public Payment[] getFinanceReport() {
         return financeReport;
     }
@@ -37,8 +63,6 @@ public class FinanceReport {
         return year;
     }
 
-    //setters
-
     public void setFIO(String FIO) {
         this.fio = FIO;
     }
@@ -55,27 +79,25 @@ public class FinanceReport {
         this.year = year;
     }
 
-    //other
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-
-
-    //friendly-methods
-
-    public int countOfPayments(){
+    public int countOfPayments() {
         return this.financeReport.length;
     }
 
-    public String[] paymentAccessRead(int index){
+    public Payment getPayment(int index) {
+        if (index < 0 || index >= this.financeReport.length) {
+            throw new IndexOutOfBoundsException("Invalid payment index: " + index);
+        }
+        return this.financeReport[index];
+    }
+
+    public void setPayment(int index, Payment payment) {
+        if (index < 0 || index >= this.financeReport.length) {
+            throw new IndexOutOfBoundsException("Invalid payment index: " + index);
+        }
+        this.financeReport[index] = payment != null ? new Payment(payment) : null;
+    }
+
+    public String[] paymentAccessRead(int index) {
         if (this.financeReport == null || index < 0 || index >= this.financeReport.length || this.financeReport[index] == null) {
             return new String[]{"", "", "", "", ""};
         }
@@ -90,7 +112,7 @@ public class FinanceReport {
         return output;
     }
 
-    public void paymentAccessWrite(int index, String name, int day, int month, int year, int payment){
+    public void paymentAccessWrite(int index, String name, int day, int month, int year, int payment) {
         if (this.financeReport == null || index < 0 || index >= this.financeReport.length) {
             return;
         }
@@ -105,43 +127,40 @@ public class FinanceReport {
         this.financeReport[index].setPayment(payment);
     }
 
-
-    //toString
     @Override
-    public String toString(){
-        String output= "";
-        output+=String.format("[Автор: %s составителя, дата: %d.%d.%d, Платежи: [\n",this.fio,this.day,this.month,this.year);
-        for(int i = 0; i < this.financeReport.length; i++){
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        output.append(String.format("[Автор: %s, дата: %d.%d.%d, Платежи: [\n", this.fio, this.day, this.month, this.year));
+        for (int i = 0; i < this.financeReport.length; i++) {
             if (financeReport[i] == null) continue;
-            output+=String.format("%d.Плательщик: %s, дата: %d.%d.%d сумма: %d руб. %d коп.\n",i,financeReport[i].getName(),financeReport[i].getDateDay(),financeReport[i].getDateMonth(),financeReport[i].getDateYear(),financeReport[i].getPayment()/100,financeReport[i].getPayment()%100);
+            output.append(String.format("Плательщик: %s, дата: %d.%d.%d сумма: %d руб. %02d коп.\n",
+                    financeReport[i].getName(),
+                    financeReport[i].getDateDay(),
+                    financeReport[i].getDateMonth(),
+                    financeReport[i].getDateYear(),
+                    financeReport[i].getPayment() / 100,
+                    financeReport[i].getPayment() % 100));
         }
-        output+="]";
-        return output;
+        output.append("]]");
+        return output.toString();
     }
 
-    //copy
-    public FinanceReport(FinanceReport other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Копируемый отчет не может быть null");
-        }
-
-        // Копируем простые поля
-        this.fio = other.getFIO();
-        this.day = other.getDay();
-        this.month = other.getMonth();
-        this.year = other.getYear();
-
-        if (other.getFinanceReport() != null) {
-            this.financeReport = new Payment[other.getFinanceReport().length];
-            for (int i = 0; i < other.getFinanceReport().length; i++) {
-                if (other.getFinanceReport()[i] != null) {
-                    this.financeReport[i] = new Payment(other.getFinanceReport()[i]);
-                } else {
-                    this.financeReport[i] = null;
-                }
-            }
-        }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        FinanceReport that = (FinanceReport) obj;
+        return day == that.day &&
+                month == that.month &&
+                year == that.year &&
+                Objects.equals(fio, that.fio) &&
+                Arrays.equals(financeReport, that.financeReport);
     }
 
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(fio, day, month, year);
+        result = 31 * result + Arrays.hashCode(financeReport);
+        return result;
+    }
 }
-

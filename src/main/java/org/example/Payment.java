@@ -1,6 +1,5 @@
 package org.example;
 
-
 public class Payment {
     private String name;
     private int dateDay;
@@ -8,25 +7,33 @@ public class Payment {
     private int dateYear;
     private int payment;
 
-    //construction
-    public Payment(String name,int day, int month, int year, int payment){
+    public Payment(String name, int day, int month, int year, int payment) {
         this.name = name;
         this.dateDay = day;
-        this.dateMonth =  month;
+        this.dateMonth = month;
         this.dateYear = year;
         this.payment = payment;
     }
-    //null construction;
-    public Payment(){
+
+    public Payment() {
         this.name = "";
         this.dateDay = 0;
-        this.dateMonth =  0;
+        this.dateMonth = 0;
         this.dateYear = 0;
         this.payment = 0;
     }
 
+    public Payment(Payment other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Payment cannot be null");
+        }
+        this.name = other.getName();
+        this.dateDay = other.getDateDay();
+        this.dateMonth = other.getDateMonth();
+        this.dateYear = other.getDateYear();
+        this.payment = other.getPayment();
+    }
 
-    //getters
     public String getName() {
         return name;
     }
@@ -47,7 +54,6 @@ public class Payment {
         return payment;
     }
 
-    //setters
     public void setName(String name) {
         this.name = name;
     }
@@ -68,8 +74,6 @@ public class Payment {
         this.payment = payment;
     }
 
-    //equals
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -82,30 +86,19 @@ public class Payment {
         if (dateYear != other.dateYear) return false;
         if (payment != other.payment) return false;
 
-        if (name == null) {
-            return other.name == null;
-        } else {
-            return name.equals(other.name);
-        }
+        return name != null ? name.equals(other.name) : other.name == null;
     }
-
-    //hash
 
     @Override
     public int hashCode() {
         int result = 17;
-
         result = 31 * result + (name != null ? name.hashCode() : 0);
-
         result = 31 * result + dateDay;
         result = 31 * result + dateMonth;
         result = 31 * result + dateYear;
         result = 31 * result + payment;
-
         return result;
     }
-    //toString
-
 
     @Override
     public String toString() {
@@ -115,15 +108,4 @@ public class Payment {
                 ", payment (в копейках)=" + payment +
                 '}';
     }
-
-    public Payment(Payment other) {
-        if (other != null) {
-            this.name = other.getName();
-            this.dateDay = other.getDateDay();
-            this.dateMonth = other.getDateMonth();
-            this.dateYear = other.getDateYear();
-            this.payment = other.getPayment();
-        }
-    }
-
 }

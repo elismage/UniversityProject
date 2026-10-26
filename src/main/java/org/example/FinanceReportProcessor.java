@@ -1,18 +1,28 @@
 package org.example;
+
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class FinanceReportProcessor {
-    public static FinanceReport paymentNameFinder(FinanceReport originalReport, char nameFirstChar){
 
+    public static FinanceReport paymentNameFinder(FinanceReport originalReport, char nameFirstChar) {
+        if (originalReport == null) {
+            throw new IllegalArgumentException("Report cannot be null");
+        }
+
+        char targetChar = Character.toLowerCase(nameFirstChar);
         int count = 0;
-        for (int i = 0; i < originalReport.getFinanceReport().length; i++){
-            if (originalReport.getFinanceReport()[i] == null) continue;
-            if (originalReport.getFinanceReport()[i].getName().charAt(0) == nameFirstChar){
+        Payment[] payments = originalReport.getFinanceReport();
+
+        for (int i = 0; i < payments.length; i++) {
+            if (payments[i] == null || payments[i].getName() == null || payments[i].getName().isEmpty()) {
+                continue;
+            }
+            if (Character.toLowerCase(payments[i].getName().charAt(0)) == targetChar) {
                 count++;
             }
         }
+
         FinanceReport financeReport = new FinanceReport(
                 originalReport.getFIO(),
                 originalReport.getDay(),
@@ -21,12 +31,12 @@ public class FinanceReportProcessor {
                 count);
 
         int newIndex = 0;
-        for (int i = 0; i < originalReport.getFinanceReport().length; i++){
-            if (originalReport.getFinanceReport()[i] == null) continue;
-
-            Payment p = originalReport.getFinanceReport()[i];
-
-            if (p.getName().charAt(0) == nameFirstChar){
+        for (int i = 0; i < payments.length; i++) {
+            if (payments[i] == null || payments[i].getName() == null || payments[i].getName().isEmpty()) {
+                continue;
+            }
+            Payment p = payments[i];
+            if (Character.toLowerCase(p.getName().charAt(0)) == targetChar) {
                 financeReport.paymentAccessWrite(
                         newIndex,
                         p.getName(),
@@ -42,15 +52,21 @@ public class FinanceReportProcessor {
         return financeReport;
     }
 
-    public static FinanceReport paymentCostFinder(FinanceReport originalReport, int minimalCost){
+    public static FinanceReport paymentCostFinder(FinanceReport originalReport, int minimalCost) {
+        if (originalReport == null) {
+            throw new IllegalArgumentException("Report cannot be null");
+        }
 
         int count = 0;
-        for (int i = 0; i < originalReport.getFinanceReport().length; i++){
-            if (originalReport.getFinanceReport()[i] == null) continue;
-            if (originalReport.getFinanceReport()[i].getPayment() < minimalCost){
+        Payment[] payments = originalReport.getFinanceReport();
+
+        for (int i = 0; i < payments.length; i++) {
+            if (payments[i] == null) continue;
+            if (payments[i].getPayment() < minimalCost) {
                 count++;
             }
         }
+
         FinanceReport financeReport = new FinanceReport(
                 originalReport.getFIO(),
                 originalReport.getDay(),
@@ -59,12 +75,10 @@ public class FinanceReportProcessor {
                 count);
 
         int newIndex = 0;
-        for (int i = 0; i < originalReport.getFinanceReport().length; i++){
-            if (originalReport.getFinanceReport()[i] == null) continue;
-
-            Payment p = originalReport.getFinanceReport()[i];
-
-            if (p.getPayment() < minimalCost){
+        for (int i = 0; i < payments.length; i++) {
+            if (payments[i] == null) continue;
+            Payment p = payments[i];
+            if (p.getPayment() < minimalCost) {
                 financeReport.paymentAccessWrite(
                         newIndex,
                         p.getName(),
@@ -80,16 +94,17 @@ public class FinanceReportProcessor {
         return financeReport;
     }
 
-
-
-    public static int dateFinder(FinanceReport originalReport, String date){
+    public static int dateFinder(FinanceReport originalReport, String date) {
         if (originalReport == null || originalReport.getFinanceReport() == null) {
             return 0;
+        }
+        if (date == null || date.isBlank()) {
+            throw new IllegalArgumentException("Date string cannot be null or empty");
         }
 
         String[] dateClassified = date.split("\\.");
         if (dateClassified.length != 3) {
-            throw new IllegalArgumentException("Illegal date format.Need DD.MM.YY");
+            throw new IllegalArgumentException("Illegal date format. Need DD.MM.YY");
         }
 
         int searchDay = Integer.parseInt(dateClassified[0].trim());
@@ -108,12 +123,15 @@ public class FinanceReportProcessor {
                 continue;
             }
 
+            int paymentYear = payments[i].getDateYear();
+            if (paymentYear < 100) {
+                paymentYear += 2000;
+            }
 
             if (payments[i].getDateDay() == searchDay &&
                     payments[i].getDateMonth() == searchMonth &&
-                    payments[i].getDateYear() == searchYear) {
-
-                totalSum+=payments[i].getPayment();
+                    paymentYear == searchYear) {
+                totalSum += payments[i].getPayment();
             }
         }
 
@@ -133,6 +151,7 @@ public class FinanceReportProcessor {
         }
 
         Payment[] payments = originalReport.getFinanceReport();
+        int targetYear = searchYear < 100 ? searchYear + 2000 : searchYear;
 
         for (int i = 0; i < payments.length; i++) {
             if (payments[i] == null) {
@@ -140,9 +159,9 @@ public class FinanceReportProcessor {
             }
 
             int paymentYear = payments[i].getDateYear();
-            if (paymentYear < 100) paymentYear += 2000;
-
-            int targetYear = searchYear < 100 ? searchYear + 2000 : searchYear;
+            if (paymentYear < 100) {
+                paymentYear += 2000;
+            }
 
             if (paymentYear == targetYear) {
                 int monthIndex = payments[i].getDateMonth() - 1;
