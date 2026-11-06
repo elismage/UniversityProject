@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StringProcessorTest {
 
-    //ТЕСТЫ ДЛЯ ЗАДАНИЯ 1
     @Test
     public void testStringRepeat_NormalCase() {
         assertEquals("abcabcabc", StringProcessor.stringRepeat("abc", 3));
@@ -23,7 +22,13 @@ public class StringProcessorTest {
         });
     }
 
-    //ТЕСТЫ ДЛЯ ЗАДАНИЯ 2
+    @Test
+    public void testStringRepeat_NullStringThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            StringProcessor.stringRepeat(null, 2);
+        });
+    }
+
     @Test
     public void testStringFindSecondInFirst_NormalCase() {
         assertEquals(2, StringProcessor.stringFindSecondInFirst("hello hello world", "hello"));
@@ -43,7 +48,6 @@ public class StringProcessorTest {
         });
     }
 
-    //ТЕСТЫ ДЛЯ ЗАДАНИЯ 3
     @Test
     public void testStringNumberRenamer_NormalCase() {
         assertEquals("один два три тест", StringProcessor.stringNumberRenamer("1 2 3 тест"));
@@ -56,12 +60,18 @@ public class StringProcessorTest {
         });
     }
 
-    //ТЕСТЫ ДЛЯ ЗАДАНИЯ 4
     @Test
     public void stringBuilder_NormalCase() {
         StringBuilder sb = new StringBuilder("123456");
         StringProcessor.stringBuilder(sb);
-        assertEquals("135",sb.toString());
+        assertEquals("135", sb.toString());
+    }
+
+    @Test
+    public void testStringBuilder_EmptyStringDoesNotThrow() {
+        StringBuilder sb = new StringBuilder("");
+        StringProcessor.stringBuilder(sb);
+        assertEquals("", sb.toString());
     }
 
     @Test
@@ -71,7 +81,6 @@ public class StringProcessorTest {
         });
     }
 
-    //ТЕСТЫ ДЛЯ ЗАДАНИЯ 5
     @Test
     public void testStringReverse_NormalCase() {
         assertEquals(" dd cc bbb aaa", StringProcessor.stringReverse(" aaa bbb cc dd"));
@@ -82,7 +91,6 @@ public class StringProcessorTest {
         assertEquals("   мир   привет ", StringProcessor.stringReverse("   привет   мир "));
     }
 
-    //ТЕСТЫ ДЛЯ ЗАДАНИЯ 6
     @Test
     public void testReplaceHexToDec_NormalCase() {
         assertEquals("Васе 16 лет", StringProcessor.replaceHexToDec("Васе 0x00000010 лет"));

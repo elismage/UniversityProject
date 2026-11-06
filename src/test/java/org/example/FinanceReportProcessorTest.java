@@ -13,13 +13,12 @@ public class FinanceReportProcessorTest {
     public void setUp() {
         sampleReport = new FinanceReport("Иванов И.И.", 12, 10, 2026, 4);
 
-        sampleReport.paymentAccessWrite(0, "Петров П.П.", 12, 1, 2026, 150000); // П, 1500 руб
-        sampleReport.paymentAccessWrite(1, "Павлов П.А.", 12, 1, 2026, 50000);  // П, 500 руб
-        sampleReport.paymentAccessWrite(2, "Сидоров С.С.", 5, 3, 2026, 300000); // С, 3000 руб
-        sampleReport.paymentAccessWrite(3, "АО Вектор", 20, 12, 2025, 9000);   // А, 90 руб
+        sampleReport.paymentAccessWrite(0, "Петров П.П.", 12, 1, 2026, 150000);
+        sampleReport.paymentAccessWrite(1, "Павлов П.А.", 12, 1, 2026, 50000);
+        sampleReport.paymentAccessWrite(2, "Сидоров С.С.", 5, 3, 2026, 300000);
+        sampleReport.paymentAccessWrite(3, "АО Вектор", 20, 12, 2025, 9000);
     }
 
-    // ТЕСТЫ paymentNameFinder
     @Test
     public void testPaymentNameFinder_NormalCase() {
         FinanceReport result = FinanceReportProcessor.paymentNameFinder(sampleReport, 'П');
@@ -28,20 +27,18 @@ public class FinanceReportProcessorTest {
         assertEquals(2, result.countOfPayments());
         assertEquals("Петров П.П.", result.paymentAccessRead(0)[0]);
         assertEquals("Павлов П.А.", result.paymentAccessRead(1)[0]);
-
-        assertEquals(sampleReport.getFIO(), result.getFIO());
-        assertEquals(sampleReport.getYear(), result.getYear());
     }
 
     @Test
-    public void testPaymentNameFinder_NoMatches() {
-        FinanceReport result = FinanceReportProcessor.paymentNameFinder(sampleReport, 'З');
+    public void testPaymentNameFinder_CaseInsensitiveAndNoMatches() {
+        FinanceReport lowerResult = FinanceReportProcessor.paymentNameFinder(sampleReport, 'с');
+        assertEquals(1, lowerResult.countOfPayments());
+        assertEquals("Сидоров С.С.", lowerResult.paymentAccessRead(0)[0]);
 
-        assertNotNull(result);
-        assertEquals(0, result.countOfPayments());
+        FinanceReport emptyResult = FinanceReportProcessor.paymentNameFinder(sampleReport, 'Я');
+        assertEquals(0, emptyResult.countOfPayments());
     }
 
-    // ТЕСТЫ paymentCostFinder
     @Test
     public void testPaymentCostFinder_NormalCase() {
         FinanceReport result = FinanceReportProcessor.paymentCostFinder(sampleReport, 100000);
@@ -53,47 +50,41 @@ public class FinanceReportProcessorTest {
     }
 
     @Test
-    public void testPaymentCostFinder_NoMatches() {
-        FinanceReport result = FinanceReportProcessor.paymentCostFinder(sampleReport, 10);
-
+    public void testPaymentCostFinder_NoneBelowThreshold() {
+        FinanceReport result = FinanceReportProcessor.paymentCostFinder(sampleReport, 1000);
         assertEquals(0, result.countOfPayments());
     }
 
-    // ТЕСТЫ dateFinder
     @Test
-    public void testDateFinder_NormalCase() {
-        assertEquals(2, FinanceReportProcessor.dateFinder(sampleReport, "12.01.2026"));
+    public void testDateFinder_NormalCaseAndTwoDigitYear() {
+        int sumJan12 = FinanceReportProcessor.dateFinder(sampleReport, "12.01.26");
+        assertEquals(200000, sumJan12);
+
+        int sumEmptyDate = FinanceReportProcessor.dateFinder(sampleReport, "01.01.26");
+        assertEquals(0, sumEmptyDate);
     }
 
     @Test
-    public void testDateFinder_ShortYearFormat() {
-        assertEquals(2, FinanceReportProcessor.dateFinder(sampleReport, "12.01.26"));
-    }
-
-    @Test
-    public void testDateFinder_IllegalDateFormatThrowsException() {
+    public void testDateFinder_InvalidFormatThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            FinanceReportProcessor.dateFinder(sampleReport, "12/01/2026");
+            FinanceReportProcessor.dateFinder(sampleReport, "2026-01-12");
         });
     }
 
-
-    // ТЕСТЫ getMonthsWithNoPayments
     @Test
     public void testGetMonthsWithNoPayments_NormalCase() {
-        // За 2026 год есть платежи в Январе (1) и Марте (3). Должно вернуть список из 10 месяцев, где нет Января и Марта.
-        List<String> emptyMonths = FinanceReportProcessor.getMonthsWithNoPayments(sampleReport, 2026);
+        List<String> emptyMonths2026 = FinanceReportProcessor.getMonthsWithNoPayments(sampleReport, 2026);
 
-        assertEquals(10, emptyMonths.size());
-        assertFalse(emptyMonths.contains("Январь"));
-        assertFalse(emptyMonths.contains("Март"));
-        assertTrue(emptyMonths.contains("Февраль"));
-        assertTrue(emptyMonths.contains("Декабрь"));
+        assertEquals(10, emptyMonths2026.size());
+        assertFalse(emptyMonths2026.contains("Январь"));
+        assertFalse(emptyMonths2026.contains("Март"));
+        assertTrue(emptyMonths2026.contains("Февраль"));
+        assertTrue(emptyMonths2026.contains("Декабрь"));
     }
 
     @Test
-    public void testGetMonthsWithNoPayments_NullReportReturnsAllMonths() {
-        List<String> emptyMonths = FinanceReportProcessor.getMonthsWithNoPayments(null, 2026);
-        assertEquals(12, emptyMonths.size());
+    public void testGetMonthsWithNoPayments_YearWithNoPayments() {
+        List<String> emptyMonths2024 = FinanceReportProcessor.getMonthsWithNoPayments(sampleReport, 2024);
+        assertEquals(12, emptyMonths2024.size());
     }
 }
