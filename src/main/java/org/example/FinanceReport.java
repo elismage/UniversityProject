@@ -85,14 +85,14 @@ public class FinanceReport {
 
     public Payment getPayment(int index) {
         if (index < 0 || index >= this.financeReport.length) {
-            throw new IndexOutOfBoundsException("Invalid payment index: " + index);
+            throw new IndexOutOfBoundsException("Invalid index: " + index);
         }
         return this.financeReport[index];
     }
 
     public void setPayment(int index, Payment payment) {
         if (index < 0 || index >= this.financeReport.length) {
-            throw new IndexOutOfBoundsException("Invalid payment index: " + index);
+            throw new IndexOutOfBoundsException("Invalid index: " + index);
         }
         this.financeReport[index] = payment != null ? new Payment(payment) : null;
     }
@@ -146,10 +146,10 @@ public class FinanceReport {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        FinanceReport that = (FinanceReport) obj;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FinanceReport that = (FinanceReport) o;
         return day == that.day &&
                 month == that.month &&
                 year == that.year &&

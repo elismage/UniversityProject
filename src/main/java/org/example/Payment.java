@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Payment {
     private String name;
     private int dateDay;
@@ -25,7 +27,7 @@ public class Payment {
 
     public Payment(Payment other) {
         if (other == null) {
-            throw new IllegalArgumentException("Payment cannot be null");
+            throw new IllegalArgumentException("Copy object cannot be null");
         }
         this.name = other.getName();
         this.dateDay = other.getDateDay();
@@ -81,12 +83,11 @@ public class Payment {
 
         Payment other = (Payment) obj;
 
-        if (dateDay != other.dateDay) return false;
-        if (dateMonth != other.dateMonth) return false;
-        if (dateYear != other.dateYear) return false;
-        if (payment != other.payment) return false;
-
-        return name != null ? name.equals(other.name) : other.name == null;
+        return dateDay == other.dateDay &&
+                dateMonth == other.dateMonth &&
+                dateYear == other.dateYear &&
+                payment == other.payment &&
+                Objects.equals(name, other.name);
     }
 
     @Override

@@ -104,7 +104,7 @@ public class FinanceReportProcessor {
 
         String[] dateClassified = date.split("\\.");
         if (dateClassified.length != 3) {
-            throw new IllegalArgumentException("Illegal date format. Need DD.MM.YY");
+            throw new IllegalArgumentException("Illegal date format.Need DD.MM.YY");
         }
 
         int searchDay = Integer.parseInt(dateClassified[0].trim());

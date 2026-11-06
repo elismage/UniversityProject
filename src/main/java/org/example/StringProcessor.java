@@ -7,7 +7,7 @@ public class StringProcessor {
             throw new IllegalArgumentException("String is null.");
         }
         if (N < 0) {
-            throw new IllegalArgumentException("Repeat times below zero.");
+            throw new IllegalArgumentException("Repeat times belows zero.");
         }
         if (N == 0) {
             return "";
@@ -21,8 +21,11 @@ public class StringProcessor {
     }
 
     public static int stringFindSecondInFirst(String string1, String string2) {
-        if (string2 == null || string2.isEmpty()) {
-            throw new IllegalArgumentException("Second string is null or empty");
+        if (string2 == null) {
+            throw new IllegalArgumentException("Second string is null");
+        }
+        if (string2.isEmpty()) {
+            throw new IllegalArgumentException("Second string is empty");
         }
         if (string1 == null) {
             return 0;
@@ -31,8 +34,8 @@ public class StringProcessor {
         int index = 0;
         int counter = 0;
         while ((index = string1.indexOf(string2, index)) != -1) {
-            counter++;
-            index++;
+            counter += 1;
+            index += 1;
         }
         return counter;
     }
